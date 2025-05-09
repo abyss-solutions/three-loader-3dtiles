@@ -4,7 +4,7 @@
   "description": "A 3D Tiles loader for Three.js",
   "main": "dist/lib/three-loader-3dtiles.umd.cjs",
   "module": "dist/lib/three-loader-3dtiles.js",
-  "typings": "dist/lib/three-loader-3dtiles.d.ts",
+  "typings": "dist/lib/index.d.ts",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/lib/three-loader-3dtiles.d.ts",
+      "types": "./dist/lib/index.d.ts",
       "node": {
         "require": "./dist/lib/three-loader-3dtiles.umd.cjs",
         "default": "./dist/lib/three-loader-3dtiles.js"
