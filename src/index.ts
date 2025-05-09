@@ -44,6 +44,7 @@ import { PointCloudFS, PointCloudVS } from './shaders';
 import type {
   LoaderProps,
   LoaderOptions,
+  LoaderGLOptions,
   Runtime,
   GeoCoord,
   GeoJSONLoaderProps,
@@ -108,7 +109,7 @@ class Loader3DTiles {
     const UPDATE_INTERVAL = options.updateInterval;
     const MAX_DEPTH_FOR_ORIENTATION = 5;
 
-    const loadersGLOptions: { [key: string]: unknown } = {};
+    const loadersGLOptions: { [key: string]: unknown } = { ...options.loaderGLOptions };
 
     if (options.cesiumIONToken) {
       loadersGLOptions['cesium-ion'] = {
@@ -928,6 +929,7 @@ export {
   GeoCoord,
   FeatureToColor,
   LoaderOptions,
+  LoaderGLOptions,
   LoaderProps,
   GeoJSONLoaderProps,
   DrapingShaderOptions,

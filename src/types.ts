@@ -1,5 +1,6 @@
 import { Stats } from '@probe.gl/stats';
 import { Tileset3D } from '@loaders.gl/tiles';
+import { LoaderOptions as LoaderGLOptions } from '@loaders.gl/core';
 import {
   Object3D,
   Vector2,
@@ -115,6 +116,8 @@ interface LoaderOptions {
   dracoDecoderPath?: string;
   /** When using a three.js loading manager, do not call `onLoad` until this number of tiles were loaded - Default: `undefined` */
   preloadTilesCount?: number;
+  /** Extra options to pass to underlying loaders */
+  loaderGLOptions?: LoaderGLOptions;
 }
 
 /** Container object for interfacing with lat/long/height coordinates */
@@ -209,6 +212,7 @@ interface Runtime {
 export type {
   LoaderProps,
   LoaderOptions,
+  LoaderGLOptions,
   Runtime,
   GeoCoord,
   GeoJSONLoaderProps,
