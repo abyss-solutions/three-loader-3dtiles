@@ -19,13 +19,13 @@ import {
   ArrowHelper,
   Color,
   Texture,
-  BufferGeometry
+  BufferGeometry,
 } from 'three';
 import { Tile3D } from '@loaders.gl/tiles';
 import { Plane as MathGLPlane } from '@math.gl/culling';
 import { Matrix3 as MathGLMatrix3 } from '@math.gl/core';
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
-import { Gradient } from './gradients'
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { Gradient } from './gradients';
 
 // From https://github.com/potree/potree/blob/master/src/materials/PointCloudMaterial.js
 function generateGradientTexture(gradient: Gradient): CanvasTexture {
@@ -123,7 +123,7 @@ function loadersBoundingBoxToMesh(tile: Tile3D): LineSegments {
   if (boundingVolume.halfAxes) {
     boxTransform.copy(getMatrix4FromHalfAxes(boundingVolume.halfAxes));
   } else if (boundingVolume.radius) {
-    boxGeometry.scale(boundingVolume.radius * 2, boundingVolume.radius * 2, boundingVolume.radius * 2);    
+    boxGeometry.scale(boundingVolume.radius * 2, boundingVolume.radius * 2, boundingVolume.radius * 2);
   }
 
   boxGeometry.applyMatrix4(boxTransform);
@@ -156,19 +156,19 @@ function getMatrix4FromHalfAxes(halfAxes: MathGLMatrix3): Matrix4 {
   return rotateMatrix;
 }
 
-/* 
+/*
  * from https://github.com/tentone/geo-three
  * Tree-shaking did not work, probably due to static class methods
-*/
-function datumsToSpherical(latitude:number, longitude:number): Vector2 {
-    const EARTH_RADIUS = 6378137;
-    const EARTH_PERIMETER = 2 * Math.PI * EARTH_RADIUS;
-    const EARTH_ORIGIN = EARTH_PERIMETER / 2.0;
+ */
+function datumsToSpherical(latitude: number, longitude: number): Vector2 {
+  const EARTH_RADIUS = 6378137;
+  const EARTH_PERIMETER = 2 * Math.PI * EARTH_RADIUS;
+  const EARTH_ORIGIN = EARTH_PERIMETER / 2.0;
 
-    const x = longitude * EARTH_ORIGIN / 180.0;
-    let y = Math.log(Math.tan((90 + latitude) * Math.PI / 360.0)) / (Math.PI / 180.0);
-    y = y * EARTH_ORIGIN / 180.0;
-    return new Vector2(x, y);
+  const x = (longitude * EARTH_ORIGIN) / 180.0;
+  let y = Math.log(Math.tan(((90 + latitude) * Math.PI) / 360.0)) / (Math.PI / 180.0);
+  y = (y * EARTH_ORIGIN) / 180.0;
+  return new Vector2(x, y);
 }
 
 function getTextureVRAMByteLength(texture: Texture): number | undefined {
@@ -176,25 +176,24 @@ function getTextureVRAMByteLength(texture: Texture): number | undefined {
 
   let uncompressedBytes = 0;
 
-  if (texture?.userData.mimeType == "image/ktx2" && texture.mipmaps)  {
+  if (texture?.userData.mimeType == 'image/ktx2' && texture.mipmaps) {
     for (let i = 0; i < texture.mipmaps.length; i++) {
       uncompressedBytes += texture.mipmaps[i].data.byteLength;
     }
-    return uncompressedBytes;    
-
+    return uncompressedBytes;
   } else if (texture.image) {
     const { image } = texture;
     const channels = 4;
 
     let resolution = [image.width, image.height];
     while (resolution[0] > 1 || resolution[1] > 1) {
-			uncompressedBytes += resolution[0] * resolution[1] * channels;
-			resolution[0] = Math.max(Math.floor(resolution[0] / 2), 1);
-			resolution[1] = Math.max(Math.floor(resolution[1] / 2), 1);
-		}
-		uncompressedBytes += 1 * 1 * channels;
+      uncompressedBytes += resolution[0] * resolution[1] * channels;
+      resolution[0] = Math.max(Math.floor(resolution[0] / 2), 1);
+      resolution[1] = Math.max(Math.floor(resolution[1] / 2), 1);
+    }
+    uncompressedBytes += 1 * 1 * channels;
 
-    return uncompressedBytes
+    return uncompressedBytes;
   } else {
     return undefined;
   }
@@ -211,5 +210,5 @@ export {
   getMatrix4FromHalfAxes,
   datumsToSpherical,
   getTextureVRAMByteLength,
-  getGeometryVRAMByteLength
+  getGeometryVRAMByteLength,
 };

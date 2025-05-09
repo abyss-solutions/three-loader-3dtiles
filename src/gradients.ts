@@ -1,7 +1,7 @@
-import { Color } from 'three'
+import { Color } from 'three';
 type Gradient = Array<[number, Color]>;
 
-const Gradients: {[key: string] : Gradient } = {
+const Gradients: { [key: string]: Gradient } = {
   // From chroma spectral http://gka.github.io/chroma.js/
   SPECTRAL: [
     [0, new Color(0.3686, 0.3098, 0.6353)],
@@ -108,7 +108,6 @@ const Gradients: {[key: string] : Gradient } = {
     [0.04, new Color(1, 1, 1)],
     [1.0, new Color(1, 1, 1)],
   ],
-}
+};
 
-export {Gradients, Gradient}
-
+export { Gradients, Gradient };

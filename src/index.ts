@@ -3,7 +3,7 @@ import { CesiumIonLoader, Tiles3DLoader } from '@loaders.gl/3d-tiles';
 import { _GeoJSONLoader } from '@loaders.gl/json';
 import { Tileset3D, TILE_TYPE, TILE_CONTENT_STATE } from '@loaders.gl/tiles';
 import { CullingVolume, Plane } from '@math.gl/culling';
-import  { _PerspectiveFrustum as PerspectiveFrustum}  from '@math.gl/culling';
+import { _PerspectiveFrustum as PerspectiveFrustum } from '@math.gl/culling';
 import { Matrix4 as MathGLMatrix4, toRadians } from '@math.gl/core';
 import { Ellipsoid } from '@math.gl/geospatial';
 import * as Util from './util';
@@ -30,7 +30,7 @@ import {
   Euler,
   Quaternion,
   NormalBlending,
-  WebGLRenderer
+  WebGLRenderer,
 } from 'three';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -41,15 +41,15 @@ import { Gradients } from './gradients';
 
 import { PointCloudFS, PointCloudVS } from './shaders';
 
-import type { 
-  LoaderProps, 
-  LoaderOptions, 
-  Runtime, 
-  GeoCoord, 
-  GeoJSONLoaderProps, 
-  FeatureToColor, 
+import type {
+  LoaderProps,
+  LoaderOptions,
+  Runtime,
+  GeoCoord,
+  GeoJSONLoaderProps,
+  FeatureToColor,
   DrapingShaderOptions,
-  Viewport
+  Viewport,
 } from './types';
 import { PointCloudColoring, Shading } from './types';
 import { BinaryFeatureCollection, FeatureCollection } from '@loaders.gl/schema';
@@ -68,7 +68,7 @@ const defaultOptions: LoaderOptions = {
   maximumScreenSpaceError: 16,
   memoryAdjustedScreenSpaceError: true,
   maximumMemoryUsage: 400,
-  memoryCacheOverflow : 128,
+  memoryCacheOverflow: 128,
   viewDistanceScale: 1.0,
   skipLevelOfDetail: false,
   resetTransform: false,
@@ -86,20 +86,20 @@ const defaultOptions: LoaderOptions = {
   material: null,
   contentPostProcess: undefined,
   preloadTilesCount: null,
-  collectAttributions: false
+  collectAttributions: false,
 };
 
 /** 3D Tiles Loader */
 class Loader3DTiles {
   /**
-  * Loads a tileset of 3D Tiles according to the given {@link LoaderProps}
-  * @public
-  *
-  * @param props - Properties for this load call {@link LoaderProps}.
-  * @returns An object containing the 3D Model to be added to the scene
-  * and a runtime engine to be updated every frame.
-  */
-  public static async load (props: LoaderProps): Promise<{ model: Object3D; runtime: Runtime }> {
+   * Loads a tileset of 3D Tiles according to the given {@link LoaderProps}
+   * @public
+   *
+   * @param props - Properties for this load call {@link LoaderProps}.
+   * @returns An object containing the 3D Model to be added to the scene
+   * and a runtime engine to be updated every frame.
+   */
+  public static async load(props: LoaderProps): Promise<{ model: Object3D; runtime: Runtime }> {
     const options = { ...defaultOptions, ...props.options };
 
     const { url } = props;
@@ -108,7 +108,7 @@ class Loader3DTiles {
     const UPDATE_INTERVAL = options.updateInterval;
     const MAX_DEPTH_FOR_ORIENTATION = 5;
 
-    const loadersGLOptions: {[key: string]: unknown} = {};
+    const loadersGLOptions: { [key: string]: unknown } = {};
 
     if (options.cesiumIONToken) {
       loadersGLOptions['cesium-ion'] = {
@@ -119,12 +119,11 @@ class Loader3DTiles {
     }
 
     if (options.googleApiKey) {
-      loadersGLOptions['fetch'] = { headers: { 'X-GOOG-API-KEY': options.googleApiKey} };
-      if (!props.options.hasOwnProperty('collectAttributions')) {  
+      loadersGLOptions['fetch'] = { headers: { 'X-GOOG-API-KEY': options.googleApiKey } };
+      if (!props.options.hasOwnProperty('collectAttributions')) {
         options.collectAttributions = true;
       }
     }
-
 
     if (props.loadingManager) {
       props.loadingManager.itemStart(url);
@@ -166,17 +165,16 @@ class Loader3DTiles {
       vertexShader: PointCloudVS,
       fragmentShader: PointCloudFS,
       transparent: options.transparent,
-      vertexColors: true
+      vertexColors: true,
     });
-    
+
     let gltfLoader = undefined;
     let ktx2Loader = undefined;
     let dracoLoader = undefined;
 
     if (options.gltfLoader) {
       gltfLoader = options.gltfLoader;
-    }
-    else {
+    } else {
       gltfLoader = new GLTFLoader();
 
       if (options.basisTranscoderPath) {
@@ -195,8 +193,8 @@ class Loader3DTiles {
         gltfLoader.setDRACOLoader(dracoLoader);
       }
     }
-    
-    const unlitMaterial = new MeshBasicMaterial({transparent: options.transparent});
+
+    const unlitMaterial = new MeshBasicMaterial({ transparent: options.transparent });
 
     const tileOptions = {
       maximumMemoryUsage: options.maximumMemoryUsage,
@@ -253,7 +251,7 @@ class Loader3DTiles {
           dataAttributions = collectAttributions(selectedTiles);
         }
         return selectedTiles;
-      }
+      },
     };
     const tileset = new Tileset3D(tilesetJson, {
       ...tileOptions,
@@ -265,7 +263,7 @@ class Loader3DTiles {
           loadImages: false,
         },
         '3d-tiles': {
-          loadGLTF: false
+          loadGLTF: false,
         },
       },
     });
@@ -282,15 +280,17 @@ class Loader3DTiles {
       if (tileset.root.header.boundingVolume.region) {
         // TODO: Handle region type bounding volumes
         // https://github.com/visgl/loaders.gl/issues/1994
-        console.warn("Cannot apply a model matrix to bounding volumes of type region. Tileset stays in original geo-coordinates.")
+        console.warn(
+          'Cannot apply a model matrix to bounding volumes of type region. Tileset stays in original geo-coordinates.',
+        );
       }
       tileTransform.setPosition(
         tileset.root.boundingVolume.center[0],
         tileset.root.boundingVolume.center[1],
-        tileset.root.boundingVolume.center[2]
-      )
+        tileset.root.boundingVolume.center[2],
+      );
     } else {
-      console.warn("Bounding volume not found, no transformations applied")
+      console.warn('Bounding volume not found, no transformations applied');
     }
 
     if (options.debug) {
@@ -306,7 +306,7 @@ class Loader3DTiles {
     pointcloudUniforms.rootNormal.value.copy(new Vector3(0, 0, 1).normalize());
 
     // Extra stats
-    tileset.stats.get('Loader concurrency').count = options.maxConcurrency
+    tileset.stats.get('Loader concurrency').count = options.maxConcurrency;
     tileset.stats.get('Maximum mem usage').count = options.maximumMemoryUsage;
 
     let timer = 0;
@@ -318,7 +318,7 @@ class Loader3DTiles {
     let sseDenominator = null;
 
     root.updateMatrixWorld(true);
-    const lastRootTransform:Matrix4 = new Matrix4().copy(root.matrixWorld)
+    const lastRootTransform: Matrix4 = new Matrix4().copy(root.matrixWorld);
     const rootTransformInverse = new Matrix4().copy(lastRootTransform).invert();
 
     if (options.resetTransform) {
@@ -336,28 +336,24 @@ class Loader3DTiles {
       }
       const halfAxes = tile.boundingVolume.halfAxes;
       const orientationMatrix = new Matrix4()
-      .extractRotation(Util.getMatrix4FromHalfAxes(halfAxes))
-      .premultiply(new Matrix4().extractRotation(rootTransformInverse));
+        .extractRotation(Util.getMatrix4FromHalfAxes(halfAxes))
+        .premultiply(new Matrix4().extractRotation(rootTransformInverse));
 
       const rotation = new Euler().setFromRotationMatrix(orientationMatrix);
 
       if (!rotation.equals(new Euler())) {
         orientationDetected = true;
-        const pos = new Vector3(
-          tileTransform.elements[12], 
-          tileTransform.elements[13], 
-          tileTransform.elements[14])
-        ;
+        const pos = new Vector3(tileTransform.elements[12], tileTransform.elements[13], tileTransform.elements[14]);
         tileTransform.extractRotation(orientationMatrix);
         tileTransform.setPosition(pos);
-      } 
+      }
       updateTransform();
     }
 
     function updateTransform() {
       // Reset the current model matrix and apply our own transformation
       threeMat.copy(lastRootTransform);
-      
+
       if (options.resetTransform) {
         threeMat.multiply(new Matrix4().copy(tileTransform).invert());
       }
@@ -437,21 +433,14 @@ class Loader3DTiles {
       const tilesLoading = tileset.stats.get('Tiles Loading').count;
 
       if (props.onProgress) {
-        props.onProgress(
-          tilesLoaded,
-          tilesLoaded + tilesLoading
-        );
+        props.onProgress(tilesLoaded, tilesLoaded + tilesLoading);
       }
 
       if (props.loadingManager && !loadingEnded) {
-        if (tilesLoading == 0 && 
-           (
-            options.preloadTilesCount == null ||
-            tilesLoaded >= options.preloadTilesCount)
-           ) {
-             loadingEnded = true;
-             props.loadingManager.itemEnd(props.url);
-           }
+        if (tilesLoading == 0 && (options.preloadTilesCount == null || tilesLoaded >= options.preloadTilesCount)) {
+          loadingEnded = true;
+          props.loadingManager.itemEnd(props.url);
+        }
       }
 
       return frameState;
@@ -478,7 +467,6 @@ class Loader3DTiles {
       rootTransformInverse.copy(lastRootTransform).invert();
 
       updateTransform();
-      
     }
 
     return {
@@ -553,30 +541,26 @@ class Loader3DTiles {
           };
         },
         getPositionFromLatLongHeight: (coord) => {
-          const cartesianPosition = tileset.ellipsoid.cartographicToCartesian([
-            coord.long,
-            coord.lat,
-            coord.height
-          ]);
+          const cartesianPosition = tileset.ellipsoid.cartographicToCartesian([coord.long, coord.lat, coord.height]);
           return new Vector3(...cartesianPosition).applyMatrix4(threeMat);
         },
-        orientToGeocoord: (coord:GeoCoord) => {
+        orientToGeocoord: (coord: GeoCoord) => {
           // Set the transofrmation matrix to the rotate the WGS84 globe to the given lat/long/Alt
           const cartographicPosition = [coord.long, coord.lat, coord.height];
 
-          const cartesianPosition:number[] = tileset.ellipsoid.cartographicToCartesian(cartographicPosition);
-          const ellipsoidTransform = new Matrix4().fromArray(tileset.ellipsoid.eastNorthUpToFixedFrame(cartesianPosition));
-
-          // Flip to Z is altitiude, Y is north, X is east
-          const alignRotation = new Matrix4().makeRotationFromEuler(
-            new Euler(Math.PI / 2, Math.PI / 2, 0)
+          const cartesianPosition: number[] = tileset.ellipsoid.cartographicToCartesian(cartographicPosition);
+          const ellipsoidTransform = new Matrix4().fromArray(
+            tileset.ellipsoid.eastNorthUpToFixedFrame(cartesianPosition),
           );
 
-          const geoTransform = new Matrix4().copy(ellipsoidTransform).multiply(alignRotation).invert()
+          // Flip to Z is altitiude, Y is north, X is east
+          const alignRotation = new Matrix4().makeRotationFromEuler(new Euler(Math.PI / 2, Math.PI / 2, 0));
+
+          const geoTransform = new Matrix4().copy(ellipsoidTransform).multiply(alignRotation).invert();
 
           setGeoTransformation(geoTransform);
         },
-        getWebMercatorCoord: (coord:GeoCoord): Vector2 => {
+        getWebMercatorCoord: (coord: GeoCoord): Vector2 => {
           return Util.datumsToSpherical(coord.lat, coord.long);
         },
         getCameraFrustum: (camera: Camera) => {
@@ -596,7 +580,7 @@ class Loader3DTiles {
 
           // Initialize draping
           if (!renderer) {
-            throw new Error("GeoJSON draping requires a renderer reference via LoaderProps");
+            throw new Error('GeoJSON draping requires a renderer reference via LoaderProps');
           }
           Draping.setup(viewport, root, renderer, shaderOptions);
           (geoJSONMesh.material as Material).dispose();
@@ -629,13 +613,15 @@ class Loader3DTiles {
               timer = 0;
               lastRootTransform.copy(root.matrixWorld);
               if (options.updateTransforms) {
-                  updateTransform();
+                updateTransform();
               }
 
               const rootCenter = new Vector3().setFromMatrixPosition(lastRootTransform);
               pointcloudUniforms.rootCenter.value.copy(rootCenter);
-              pointcloudUniforms.rootNormal.value.copy(new Vector3(0, 0, 1).applyMatrix4(lastRootTransform).normalize());
-              rootTransformInverse.copy(lastRootTransform).invert(); 
+              pointcloudUniforms.rootNormal.value.copy(
+                new Vector3(0, 0, 1).applyMatrix4(lastRootTransform).normalize(),
+              );
+              rootTransformInverse.copy(lastRootTransform).invert();
 
               if (options.debug) {
                 boxMap[tileset.root.id].matrixWorld.copy(threeMat);
@@ -646,10 +632,7 @@ class Loader3DTiles {
             if (lastCameraTransform == null) {
               lastCameraTransform = new Matrix4().copy(camera.matrixWorld);
             } else {
-              if (
-                needsUpdate || 
-                cameraChanged(camera, lastCameraTransform)
-            ) {
+              if (needsUpdate || cameraChanged(camera, lastCameraTransform)) {
                 timer = 0;
                 needsUpdate = false;
                 tileset._frameNumber++;
@@ -685,19 +668,20 @@ class Loader3DTiles {
     };
   }
   /**
-  * Loads a tileset of 3D Tiles according to the given {@link GeoJSONLoaderProps}
-  * Could be overlayed on geograpical 3D Tiles using {@link Runtime.overlayGeoJSON}
-  * @public
-  *
-  * @param props - Properties for this load call {@link GeoJSONLoaderProps}.
-  * @returns An object containing the 3D Model to be added to the scene
-  */
-  public static async loadGeoJSON(props: GeoJSONLoaderProps): Promise <Object3D> {
-    const { url, height, featureToColor } = props; 
-    return load(url, _GeoJSONLoader, { worker: false,  gis: {format: 'binary'}}).then((data) => {  
-        const featureCollection = data as unknown as BinaryFeatureCollection;
-        const geometry = new BufferGeometry();
-        const cartesianPositions = (featureCollection.polygons.positions.value as Float32Array).reduce((acc, val, i, src) => {
+   * Loads a tileset of 3D Tiles according to the given {@link GeoJSONLoaderProps}
+   * Could be overlayed on geograpical 3D Tiles using {@link Runtime.overlayGeoJSON}
+   * @public
+   *
+   * @param props - Properties for this load call {@link GeoJSONLoaderProps}.
+   * @returns An object containing the 3D Model to be added to the scene
+   */
+  public static async loadGeoJSON(props: GeoJSONLoaderProps): Promise<Object3D> {
+    const { url, height, featureToColor } = props;
+    return load(url, _GeoJSONLoader, { worker: false, gis: { format: 'binary' } }).then((data) => {
+      const featureCollection = data as unknown as BinaryFeatureCollection;
+      const geometry = new BufferGeometry();
+      const cartesianPositions = (featureCollection.polygons.positions.value as Float32Array).reduce(
+        (acc, val, i, src) => {
           if (i % 2 == 0) {
             const cartographic = [val, src[i + 1], height ?? 0];
             const cartesian = Ellipsoid.WGS84.cartographicToCartesian(cartographic);
@@ -705,46 +689,39 @@ class Loader3DTiles {
             acc.push(...cartesian);
           }
           return acc;
+        },
+        [],
+      );
+      geometry.setAttribute('position', new Float32BufferAttribute(cartesianPositions, 3));
+      if (featureToColor) {
+        const colors = (
+          (featureCollection.polygons.numericProps as any)[featureToColor.feature].value as Array<number>
+        ).reduce((acc, val, i, src) => {
+          const color = featureToColor.colorMap(val);
+          acc[i * 3] = color.r;
+          acc[i * 3 + 1] = color.g;
+          acc[i * 3 + 2] = color.b;
+          return acc;
         }, []);
-        geometry.setAttribute('position', new Float32BufferAttribute(
-          cartesianPositions,
-          3
-        ));
-        if (featureToColor) {
-          const colors = ((featureCollection.polygons.numericProps as any)
-          [featureToColor.feature].value as Array<number>).reduce((acc, val, i, src) => {
-              const color = featureToColor.colorMap(val);
-              acc[i * 3] = color.r;
-              acc[(i *3) + 1] = color.g;
-              acc[(i *3) + 2] = color.b;
-              return acc;
-          }, []);
-          geometry.setAttribute('color', new Float32BufferAttribute(
-            colors,
-            3
-          ));
-        }
-        geometry.setIndex(
-          new BufferAttribute(featureCollection.polygons.triangles.value, 1)
-        );
-        const material = new MeshBasicMaterial({
-          transparent: true, 
-          vertexColors: true,
-          opacity: 0.5, 
-          blending: NormalBlending
-        });
-        const mesh = new Mesh( geometry, material );
-        return mesh;
+        geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+      }
+      geometry.setIndex(new BufferAttribute(featureCollection.polygons.triangles.value, 1));
+      const material = new MeshBasicMaterial({
+        transparent: true,
+        vertexColors: true,
+        opacity: 0.5,
+        blending: NormalBlending,
+      });
+      const mesh = new Mesh(geometry, material);
+      return mesh;
     });
   }
 }
 
-
-
 async function createGLTFNodes(gltfLoader, tile, unlitMaterial, options, rootTransformInverse): Promise<Object3D> {
   return new Promise((resolve, reject) => {
     const rotateX = new Matrix4().makeRotationAxis(new Vector3(1, 0, 0), Math.PI / 2);
-    const shouldRotate = tile.content.gltfUpAxis !== "Z";
+    const shouldRotate = tile.content.gltfUpAxis !== 'Z';
 
     // The computed trasnform already contains the root's transform, so we have to invert it
     const contentTransform = new Matrix4().fromArray(tile.computedTransform).premultiply(rootTransformInverse);
@@ -760,24 +737,24 @@ async function createGLTFNodes(gltfLoader, tile, unlitMaterial, options, rootTra
 
     gltfLoader.parse(
       tile.content.gltfArrayBuffer,
-      tile.contentUrl ? tile.contentUrl.substr(0,tile.contentUrl.lastIndexOf('/') + 1) : null,
+      tile.contentUrl ? tile.contentUrl.substr(0, tile.contentUrl.lastIndexOf('/') + 1) : null,
       (gltf) => {
         tile.userData.asset = gltf.asset;
-        
+
         const tileContent = gltf.scenes[0] as Group;
-        tileContent.applyMatrix4(contentTransform); 
-      
-        // Memory usage 
+        tileContent.applyMatrix4(contentTransform);
+
+        // Memory usage
         tile.content.texturesByteLength = 0;
         tile.content.geometriesByteLength = 0;
 
         tileContent.traverse((object) => {
-          if (object.type == "Mesh") {
+          if (object.type == 'Mesh') {
             const mesh = object as Mesh;
 
             tile.content.geometriesByteLength += Util.getGeometryVRAMByteLength(mesh.geometry);
 
-            const originalMaterial = (mesh.material as MeshStandardMaterial);
+            const originalMaterial = mesh.material as MeshStandardMaterial;
             const originalMap = originalMaterial.map;
 
             if (originalMap) {
@@ -790,14 +767,17 @@ async function createGLTFNodes(gltfLoader, tile, unlitMaterial, options, rootTra
             if (options.material) {
               mesh.material = options.material.clone();
               originalMaterial.dispose();
-            } else if (options.shading == Shading.FlatTexture && (mesh.material as Material).type !== "MeshBasicMaterial") {
+            } else if (
+              options.shading == Shading.FlatTexture &&
+              (mesh.material as Material).type !== 'MeshBasicMaterial'
+            ) {
               mesh.material = unlitMaterial.clone();
               originalMaterial.dispose();
             }
 
             if (options.shading != Shading.ShadedNoTexture) {
-              if ((mesh.material as Material).type == "ShaderMaterial") {
-                 (mesh.material as ShaderMaterial).uniforms.map = { value: originalMap };
+              if ((mesh.material as Material).type == 'ShaderMaterial') {
+                (mesh.material as ShaderMaterial).uniforms.map = { value: originalMap };
               } else {
                 (mesh.material as MeshStandardMaterial).map = originalMap;
               }
@@ -855,7 +835,7 @@ function createPointNodes(tile, pointcloudMaterial, options, rootTransformInvers
     geometry.setAttribute(
       'intensity',
       // Handles both 16bit or 8bit intensity values
-      new BufferAttribute(d.intensities, 1, true)
+      new BufferAttribute(d.intensities, 1, true),
     );
   }
   if (d.classifications) {
@@ -880,13 +860,10 @@ function createPointNodes(tile, pointcloudMaterial, options, rootTransformInvers
   return tileContent;
 }
 
-
 function disposeMaterial(material) {
-
   if ((material as ShaderMaterial)?.uniforms?.map) {
     ((material as ShaderMaterial)?.uniforms?.map.value as Texture)?.dispose();
-  }
-  else if (material.map) {
+  } else if (material.map) {
     (material.map as Texture)?.dispose();
   }
   material.dispose();
@@ -898,12 +875,12 @@ function disposeNode(node) {
       object.geometry.dispose();
 
       if (object.material.isMaterial) {
-        disposeMaterial(object.material);   
+        disposeMaterial(object.material);
       } else {
         // an array of materials
         for (const material of object.material) {
           disposeMaterial(material);
-        } 
+        }
       }
     }
   });
@@ -913,20 +890,20 @@ function disposeNode(node) {
   }
 }
 
-function cameraChanged(camera:Camera, lastCameraTransform:Matrix4) {
+function cameraChanged(camera: Camera, lastCameraTransform: Matrix4) {
   return !camera.matrixWorld.equals(lastCameraTransform);
 }
 
 function collectAttributions(tiles) {
   // attribution guidelines: https://developers.google.com/maps/documentation/tile/create-renderer#display-attributions
-  
+
   const copyrightCounts = new Map(); // Use a Map to keep track of counts
 
-  tiles.forEach(tile => {
+  tiles.forEach((tile) => {
     const copyright = tile?.userData?.asset?.copyright;
     if (copyright) {
-      const attributions = copyright.split(/;/g).map(attr => attr.trim());
-      attributions.forEach(attr => {
+      const attributions = copyright.split(/;/g).map((attr) => attr.trim());
+      attributions.forEach((attr) => {
         if (attr) {
           // Increment the count for this attribution in the Map
           copyrightCounts.set(attr, (copyrightCounts.get(attr) || 0) + 1);
@@ -937,21 +914,21 @@ function collectAttributions(tiles) {
 
   const sortedAttributions = Array.from(copyrightCounts)
     .sort((a, b) => b[1] - a[1])
-    .map(([attr,]) => attr);
+    .map(([attr]) => attr);
 
   const attributionString = sortedAttributions.join('; ');
   return attributionString;
 }
 
 export {
-   Loader3DTiles, 
-   PointCloudColoring, 
-   Shading, 
-   Runtime, 
-   GeoCoord, 
-   FeatureToColor, 
-   LoaderOptions, 
-   LoaderProps,
-   GeoJSONLoaderProps,
-   DrapingShaderOptions
+  Loader3DTiles,
+  PointCloudColoring,
+  Shading,
+  Runtime,
+  GeoCoord,
+  FeatureToColor,
+  LoaderOptions,
+  LoaderProps,
+  GeoJSONLoaderProps,
+  DrapingShaderOptions,
 };

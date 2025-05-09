@@ -10,7 +10,7 @@ import {
   LoadingManager,
   Mesh,
   Points,
-  Color
+  Color,
 } from 'three';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -41,20 +41,20 @@ interface Viewport {
 
 /** Properties for loading a tileset */
 interface LoaderProps {
-    /** The URL of the tileset. For example if using Cesium ION, 
-    * it would have the form: `https://assets.cesium.com/[ASSET_ID]/tileset.json`.
-    */
-    url: string;
-    /** Viewport properties. Use `setViewport()` to update */
-    viewport: Viewport;
-    /** An existing renderer reference. Required for shader processing. */
-    renderer?: WebGLRenderer;
-    /** Advanced options for loading the tileset ({@link LoaderOptions}) */
-    options?: LoaderOptions;
-    /** a loading progress callback function */
-    onProgress?(progress: number | ProgressEvent<EventTarget>, total?: number): void;
-    /** Use a Three JS loading manager */
-    loadingManager?: LoadingManager;
+  /** The URL of the tileset. For example if using Cesium ION,
+   * it would have the form: `https://assets.cesium.com/[ASSET_ID]/tileset.json`.
+   */
+  url: string;
+  /** Viewport properties. Use `setViewport()` to update */
+  viewport: Viewport;
+  /** An existing renderer reference. Required for shader processing. */
+  renderer?: WebGLRenderer;
+  /** Advanced options for loading the tileset ({@link LoaderOptions}) */
+  options?: LoaderOptions;
+  /** a loading progress callback function */
+  onProgress?(progress: number | ProgressEvent<EventTarget>, total?: number): void;
+  /** Use a Three JS loading manager */
+  loadingManager?: LoadingManager;
 }
 
 /** Advanced loader options */
@@ -79,7 +79,7 @@ interface LoaderOptions {
   memoryAdjustedScreenSpaceError?: boolean;
   /** The maximum additional memory (in MB) to allow for cache headroom before adjusting the screen spacer error - Default: `1`. */
   memoryCacheOverflow?: number;
-  /** 0-1 scale for the LOD quality. A lower value loads tiles from lower LODs (increases performance). */ 
+  /** 0-1 scale for the LOD quality. A lower value loads tiles from lower LODs (increases performance). */
   viewDistanceScale?: number;
   /** Maximum worker thread concurrency when processing DRACO-compressed tiles - Default: `1` worker. */
   maxConcurrency?: number;
@@ -89,7 +89,7 @@ interface LoaderOptions {
   throttleRequests?: boolean;
   /** When thorttling requests, how many requests can launch simultaneously - Default: `64` */
   maxRequests?: number;
-  /** _EXPERIMENTAL_: Skip traversal mechanism, not yet supported. Default: `false` */ 
+  /** _EXPERIMENTAL_: Skip traversal mechanism, not yet supported. Default: `false` */
   skipLevelOfDetail?: boolean;
   /** When viewing b3dm (mesh) tiles, which type of {@link Shading} is used - Default: `Shading.FlatTexture` */
   shading?: Shading;
@@ -137,7 +137,7 @@ interface FeatureToColor {
 interface GeoJSONLoaderProps {
   /** The URL of the GeoJSON file. */
   url: string;
-  /** cartographic A height in which to place the GeoJSON */ 
+  /** cartographic A height in which to place the GeoJSON */
   height: number;
   /** A mapping function between data features and vertex colors */
   featureToColor?: FeatureToColor;
@@ -145,16 +145,16 @@ interface GeoJSONLoaderProps {
 
 /** Runtime methods that can be used once a tileset is loaded */
 interface Runtime {
-  /** 
-  * Get a reference to the loaders.gl {@link https://github.com/visgl/loaders.gl/blob/master/modules/tiles/docs/api-reference/tileset-3d.md | Tileset3D} object.
-  *
-  * @returns {@link https://github.com/visgl/loaders.gl/blob/master/modules/tiles/docs/api-reference/tileset-3d.md | Tileset3D} 
-  */
+  /**
+   * Get a reference to the loaders.gl {@link https://github.com/visgl/loaders.gl/blob/master/modules/tiles/docs/api-reference/tileset-3d.md | Tileset3D} object.
+   *
+   * @returns {@link https://github.com/visgl/loaders.gl/blob/master/modules/tiles/docs/api-reference/tileset-3d.md | Tileset3D}
+   */
   getTileset(): Tileset3D;
-  /** 
-  * Get a reference to the probe.gl {@link https://github.com/uber-web/probe.gl/blob/master/docs/api-reference/stats/stats.md | Stats} object. 
-  * @returns {@link https://github.com/uber-web/probe.gl/blob/master/docs/api-reference/stats/stats.md | Stats}
-  */
+  /**
+   * Get a reference to the probe.gl {@link https://github.com/uber-web/probe.gl/blob/master/docs/api-reference/stats/stats.md | Stats} object.
+   * @returns {@link https://github.com/uber-web/probe.gl/blob/master/docs/api-reference/stats/stats.md | Stats}
+   */
   getStats(): Stats;
   /** Get the tileset's attribution text. */
   getDataAttributions(): string;
@@ -195,25 +195,25 @@ interface Runtime {
   /** Get the current camera frustum as mesh planes (for debugging purposes). */
   getCameraFrustum(camera: Camera): Object3D;
   /** Overlay a GeoJSON polygon on top of geo-located 3d tiles. Implements a _Draping_ algorithm from https://ieeexplore.ieee.org/abstract/document/8811991 */
-  overlayGeoJSON(geoJSONMesh: Mesh, shaderOptions?:DrapingShaderOptions): void;  
+  overlayGeoJSON(geoJSONMesh: Mesh, shaderOptions?: DrapingShaderOptions): void;
   /** Set the viewport properties */
   setViewport(viewport: Viewport): void;
   /** Set the renderer used for shader processsing */
   setRenderer(renderer: WebGLRenderer): void;
   /** Update the tileset for rendering. */
-  update(dt:Number, camera:Camera): void;
+  update(dt: Number, camera: Camera): void;
   /** Dispose of all of the tileset's assets in memory. */
   dispose(): void;
 }
 
-export type { 
-  LoaderProps, 
-  LoaderOptions, 
-  Runtime, 
-  GeoCoord, 
-  GeoJSONLoaderProps, 
-  FeatureToColor, 
+export type {
+  LoaderProps,
+  LoaderOptions,
+  Runtime,
+  GeoCoord,
+  GeoJSONLoaderProps,
+  FeatureToColor,
   DrapingShaderOptions,
-  Viewport
+  Viewport,
 };
-export { PointCloudColoring, Shading }
+export { PointCloudColoring, Shading };
