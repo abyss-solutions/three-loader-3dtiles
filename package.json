@@ -45,7 +45,8 @@
     "docs:production": "npm run build:types && npm run api:extract:production && npm run api:generate",
     "build:production": "export NODE_ENV=production || set NODE_ENV=production && npm run build",
     "build:production:lib": "export NODE_ENV=production || set NODE_ENV=production && npm run build:lib && npm run build:types && npm run api:extract:production",
-    "test": "mocha --experimental-specifier-resolution=node --loader=ts-node/esm test/**/*.spec.ts"
+    "test": "mocha --experimental-specifier-resolution=node --loader=ts-node/esm test/**/*.spec.ts",
+    "release": "semantic-release"
   },
   "browserslist": [
     "last 2 versions",
@@ -73,6 +74,8 @@
     "@rollup/plugin-eslint": "^9.0.5",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/chai": "^4.2.19",
     "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^8.2.2",
@@ -95,6 +98,7 @@
     "rollup": "^4.9.0",
     "rollup-plugin-node-externals": "^2.2.0",
     "rollup-plugin-typescript2": "^0.36.0",
+    "semantic-release": "^24.2.0",
     "sinon": "^11.1.1",
     "three": "^0.160.0",
     "three-story-controls": "^1.0.6",

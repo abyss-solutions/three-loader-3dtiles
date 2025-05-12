@@ -1,0 +1,75 @@
+# .semaphore/semaphore.yml
+version: v1.0
+agent:
+  machine:
+    type: e2-standard-2
+    os_image: ubuntu2204
+blocks:
+  - name: Install dependencies
+    dependencies: []
+    task:
+      prologue:
+        commands:
+          - checkout
+          - nvm install && nvm use
+      jobs:
+        - name: npm install and cache
+          commands:
+            - cache restore node_modules-$(checksum package-lock.json),node_modules-$SEMAPHORE_GIT_BRANCH,node_modules-main
+            - npm install
+            - cache store node_modules-$SEMAPHORE_GIT_BRANCH node_modules
+            - cache store node_modules-$(checksum package-lock.json) node_modules
+  - name: Test
+    dependencies:
+      - Install dependencies
+    task:
+      env_vars:
+        - name: CI
+          value: 'true'
+      prologue:
+        commands:
+          - checkout
+          - nvm install && nvm use
+          - cache restore node_modules-$(checksum package-lock.json)
+      jobs:
+        - name: Unit Test
+          commands:
+            - npm --run-script test
+        - name: Type Check
+          commands:
+            - npm --run-script build:types
+  - name: Build
+    dependencies:
+      - Test
+    task:
+      prologue:
+        commands:
+          - checkout
+          - nvm install && nvm use
+          - cache restore node_modules-$(checksum package-lock.json)
+      jobs:
+        - name: Build
+          commands:
+            - npm --run-script build:production:lib
+            - cache store dist-"$SEMAPHORE_WORKFLOW_ID" dist # cache dist for latest commit hash
+  - name: Release
+    dependencies:
+      - Build
+    skip:
+      when: branch != 'main' and branch != 'develop' and branch != 'alpha'
+    task:
+      secrets:
+        - name: github-three-loader-3dtiles-push-token
+        - name: gemfury-push-token
+      prologue:
+        commands:
+          - checkout
+          - nvm install && nvm use
+          - cache restore node_modules-$(checksum package-lock.json)
+          - chmod 400 ~/.ssh/github_rsa
+          - ssh-add ~/.ssh/github_rsa
+      jobs:
+        - name: Release
+          commands:
+            - cache restore dist-"$SEMAPHORE_WORKFLOW_ID"
+            - npm --run-script release -r $SEMAPHORE_GIT_URL
