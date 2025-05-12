@@ -1,5 +1,5 @@
 {
-  "name": "three-loader-3dtiles",
+  "name": "@abyss/three-loader-3dtiles",
   "version": "1.2.7",
   "description": "A 3D Tiles loader for Three.js",
   "main": "dist/lib/three-loader-3dtiles.umd.cjs",
@@ -8,9 +8,8 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nytimes/three-loader-3dtiles.git"
+    "url": "git+https://github.com/abyss-solutions/three-loader-3dtiles.git"
   },
-  "homepage": "https://github.com/nytimes/three-loader-3dtiles",
   "directories": {
     "example": "examples"
   },
@@ -45,6 +44,7 @@
     "docs": "npm run build:types && npm run api:extract && npm run api:generate",
     "docs:production": "npm run build:types && npm run api:extract:production && npm run api:generate",
     "build:production": "export NODE_ENV=production || set NODE_ENV=production && npm run build",
+    "build:production:lib": "export NODE_ENV=production || set NODE_ENV=production && npm run build:lib && npm run build:types && npm run api:extract:production",
     "test": "mocha --experimental-specifier-resolution=node --loader=ts-node/esm test/**/*.spec.ts"
   },
   "browserslist": [
